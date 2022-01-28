@@ -1,0 +1,12 @@
+name: RandomTeleportation
+version: '${project.version}'
+main: ua.limefu.me.randomteleportation.RandomTeleportation
+authors: [ LimeFu ]
+description: Teleport to random coordinates
+commands:
+  randomtp:
+    aliases:
+      - rtp
+      - randomteleport
+
+
