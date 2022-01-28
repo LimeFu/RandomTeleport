@@ -32,7 +32,7 @@ public class rtpcommand implements CommandExecutor {
                 Location teleport = new Location(player.getWorld(), x, y, z);
 
                 player.teleport(teleport);
-                player.addPotionEffect(new PotionEffect (PotionEffectType.DAMAGE_RESISTANCE, 50, 10));
+                player.addPotionEffect(new PotionEffect (PotionEffectType.DAMAGE_RESISTANCE, 100, 10));
                 player.sendMessage(ChatColor.DARK_AQUA + "Вы телепортированы в " + (int) teleport.distance(originalLoc) + " Блоков");
 
                 return true;
