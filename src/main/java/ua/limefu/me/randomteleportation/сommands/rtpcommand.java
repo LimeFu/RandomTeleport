@@ -1,44 +1,53 @@
 package ua.limefu.me.randomteleportation.сommands;
 
-import org.bukkit.*;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ua.limefu.me.randomteleportation.RandomTeleportation;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class rtpcommand implements CommandExecutor {
 
+    static String COMMAND = "randomtp";
+    static PotionEffect POTION_EFFECT = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 10);
 
-    public rtpcommand(RandomTeleportation plugin) {
-        plugin.getCommand("randomtp").setExecutor(this);
+    World world = Bukkit.getWorld("world");
+
+    public rtpcommand (JavaPlugin plugin) {
+        plugin.getCommand(COMMAND).setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = (Player) sender;
-        if (player.getWorld() == Bukkit.getWorld("World")) {
-            if (command.getName().equalsIgnoreCase("randomtp")) {
-                Location originalLoc = player.getLocation();
-                Random random = new Random();
-                int x = random.nextInt(1500);
-                int y = 100;
-                int z = random.nextInt(100);
+        if (!(sender instanceof Player) || !command.getName().equalsIgnoreCase(COMMAND)) return false;
 
-                Location teleport = new Location(player.getWorld(), x, y, z);
+        val player = (Player) sender;
 
-                player.teleport(teleport);
-                player.addPotionEffect(new PotionEffect (PotionEffectType.DAMAGE_RESISTANCE, 100, 10));
-                player.sendMessage(ChatColor.DARK_AQUA + "Вы телепортированы в " + (int) teleport.distance(originalLoc) + " Блоков");
+        val playerWorld = player.getWorld();
+        if (!playerWorld.equals(this.world)) return false;
 
-                return true;
-            }
+        val random = ThreadLocalRandom.current();
+        val teleport = new Location(playerWorld, random.nextInt(1500), 100, random.nextInt(100));
 
-        }
+        val originalLoc = player.getLocation();
+
+        player.teleport(teleport);
+        player.addPotionEffect(POTION_EFFECT);
+        player.sendMessage(ChatColor.DARK_AQUA + "Вы телепортированы в " + (int) teleport.distance(originalLoc) + " Блоков");
+
         return true;
     }
+
 }
